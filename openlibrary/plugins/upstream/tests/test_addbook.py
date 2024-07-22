@@ -460,7 +460,7 @@ class TestMakeWork:
 
 
 
-class addbook(delegate.page):
+class addbook:
 
     # Caso de Teste CT1
     def test_ct1(self):
