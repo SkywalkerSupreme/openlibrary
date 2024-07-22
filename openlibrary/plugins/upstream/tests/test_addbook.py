@@ -457,3 +457,214 @@ class TestMakeWork:
         )
 
         assert addbook.make_work(doc) == web_doc
+
+
+
+class addbook(delegate.page):
+
+    # Caso de Teste CT1
+    def test_ct1(self):
+        result = try_edition_match(
+            publisher="O'Reilly",
+            publish_year=None,
+            id_value=None
+        )
+        self.assertIsNone(result)  # Esperado: Falso (None)
+        # CD1F, CD2V, CD3V - Linha 368 FVV
+
+    # Caso de Teste CT2
+    def test_ct2(self):
+        result = try_edition_match(
+            publisher=None,
+            publish_year="2024",
+            id_value=None
+        )
+        self.assertIsNone(result)  # Esperado: Falso (None)
+        # CD1V, CD2F, CD3V - Linha 368 VFV
+
+    # Caso de Teste CT3
+    def test_ct3(self):
+        result = try_edition_match(
+            publisher=None,
+            publish_year=None,
+            id_value="12345"
+        )
+        self.assertIsNone(result)  # Esperado: Falso (None)
+        # CD1V, CD2V, CD3F - Linha 368 VVF
+
+    # Caso de Teste CT4
+    def test_ct4(self):
+        result = try_edition_match(
+            publisher=None,
+            publish_year=None,
+            id_value="12345",
+            id_name="isbn",
+            mapping={"isbn": "12345"}
+        )
+        self.assertIsInstance(result, Edition)  # Esperado: Verdadeiro
+        # CD1V, CD2V, CD3V, CD4V, CD5V, CD6V, CD7V, CD8F - Linha 368 VVV Linha 386 VV
+
+    # Caso de Teste CT5
+    def test_ct5(self):
+        result = try_edition_match(
+            publisher=None,
+            publish_year=None,
+            id_value="12345",
+            id_name="isbn",
+            mapping={"isbn": "12345"}
+        )
+        self.assertIsInstance(result, Edition)  # Esperado: Verdadeiro
+        # CD4V, CD5V, CD6V, CD7F, CD8V - Linha 368 VVV Linha 386 VV
+
+    # Caso de Teste CT6
+    def test_ct6(self):
+        result = try_edition_match(
+            id_value="12345",
+            id_name="iffb",
+            mapping={"issn": "12345"}
+        )
+        self.assertIsNone(result)  # Esperado: Falso (None)
+        # CD4V, CD5F, CD6F - Linha 386 VF
+
+    # Caso de Teste CT7
+    def test_ct7(self):
+        result = try_edition_match(
+            id_value=None,
+            id_name="isbn",
+            mapping={"isbn": "12345"}
+        )
+        self.assertIsNone(result)  # Esperado: Falso (None)
+        # CD4F, CD5V, CD6V - Linha 386 FV
+
+    # Caso de Teste CT8
+    def test_ct8(self):
+        result = try_edition_match(
+            publisher="O'Reilly",
+            e=web.Storage(publishers=["Penguin"])
+        )
+        self.assertIsInstance(result, Edition)  # Esperado: Verdadeiro
+        # CD9V, CD10F, CD11V - Linha 409 FVV
+
+    # Caso de Teste CT9
+    def test_ct9(self):
+        result = try_edition_match(
+            publisher="O'Reilly",
+            e=web.Storage(publishers=["Penguin"])
+        )
+        self.assertIsNone(result)  # Esperado: Falso (None)
+        # CD9V, CD10F, CD11F - Linha 409 FFV
+
+    # Caso de Teste CT10
+    def test_ct10(self):
+        result = try_edition_match(
+            publisher="O'Reilly",
+            e=web.Storage(publishers=None)
+        )
+        self.assertIsInstance(result, Edition)  # Esperado: Verdadeiro
+        # CD9V, CD10V, CD11F - Linha 409 VFV
+
+    # Caso de Teste CT11
+    def test_ct11(self):
+        result = try_edition_match(
+            publish_year=2024,
+            e=web.Storage(publish_date=2000)
+        )
+        self.assertIsInstance(result, Edition)  # Esperado: Verdadeiro
+        # CD12V, CD13F, CD14V - Linha 411-414 VFV
+
+    # Caso de Teste CT12
+    def test_ct12(self):
+        result = try_edition_match(
+            publish_year=2000,
+            e=web.Storage(publish_date=2000)
+        )
+        self.assertIsNone(result)  # Esperado: Falso (None)
+        # CD12V, CD13F, CD14F - Linha 411-414 VFF
+
+    # Caso de Teste CT13
+    def test_ct13(self):
+        result = try_edition_match(
+            publish_year=2005,
+            e=web.Storage(publish_date=None)
+        )
+        self.assertIsInstance(result, Edition)  # Esperado: Verdadeiro
+        # CD12V, CD13V, CD14F - Linha 411-414 VVF
+
+    # Caso de Teste CT14
+    def test_ct14(self):
+        result = try_edition_match(
+            publish_year=None,
+            e=web.Storage(publish_date=2010)
+        )
+        self.assertIsNone(result)  # Esperado: Falso (None)
+        # CD12F, CD13F, CD14V - Linha 411-414 FFV
+
+    # Caso de Teste CT15
+    def test_ct15(self):
+        result = try_edition_match(
+            publisher=None,
+            e=web.Storage(publishers=None)
+        )
+        self.assertIsNone(result)  # Esperado: Falso (None)
+        # CD9F, CD10V, CD11F - Linha 416 VV
+
+    # Caso de Teste CT16
+    def test_ct16(self):
+        result = try_edition_match(
+            id_value=123,
+            id_name="item",
+            mapping={"item": 1}
+        )
+        self.assertIsInstance(result, Edition)  # Esperado: Verdadeiro
+        # CD15V, CD16V - Linha 416 VF
+
+    # Caso de Teste CT17
+    def test_ct17(self):
+        result = try_edition_match(
+            id_value=123,
+            id_name="item",
+            mapping={}
+        )
+        self.assertIsNone(result)  # Esperado: Falso (None)
+        # CD15V, CD16F - Linha 416 FV
+
+    # Caso de Teste CT18
+    def test_ct18(self):
+        result = try_edition_match(
+            id_value=None,
+            id_name="item",
+            mapping={"item": 1}
+        )
+        self.assertIsNone(result)  # Esperado: Falso (None)
+        # CD15F, CD16V - Linha 417 VF
+
+    # Caso de Teste CT19
+    def test_ct19(self):
+        result = try_edition_match(
+            e=web.Storage(),
+            id_name="item",
+            id_value=123
+        )
+        self.assertIsInstance(result, Edition)  # Esperado: Verdadeiro
+        # CD17V, CD18F - Linha 417 FV
+
+    # Caso de Teste CT20
+    def test_ct20(self):
+        result = try_edition_match(
+            e=web.Storage(item={}),
+            id_name="item",
+            id_value=123
+        )
+        self.assertIsInstance(result, Edition)  # Esperado: Verdadeiro
+        # CD17F, CD18V - Linha 417 FF
+
+    # Caso de Teste CT21
+    def test_ct21(self):
+        result = try_edition_match(
+            e=web.Storage(item={123: "value"}),
+            id_name="item",
+            id_value=123
+        )
+        self.assertIsNone(result)  # Esperado: Falso (None)
+        # CD17F, CD18F - Linha 417 FF
+
