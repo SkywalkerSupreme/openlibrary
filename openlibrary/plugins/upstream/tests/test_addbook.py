@@ -460,7 +460,9 @@ class TestMakeWork:
 
 
 
-class addbook:
+
+class addbook(delegate.page):
+    path = "/books/add"
 
     # Caso de Teste CT1
     def test_ct1(self):
